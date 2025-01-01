@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.syllabuzz.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_subjects"
+        android:name="com.example.syllabuzz.SubjectsFragment"
+        android:label="@string/menu_subjects"
+        tools:layout="@layout/fragment_subjects" >
+        <action
+            android:id="@+id/action_subjectsFragment_to_lessonsFragment"
+            app:destination="@id/lessonsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/lessonsFragment"
+        android:name="com.example.syllabuzz.LessonsFragment"
+        android:label="fragment_lessons"
+        tools:layout="@layout/fragment_lessons" >
+        <action
+            android:id="@+id/action_lessonsFragment_to_lessonContentFragment"
+            app:destination="@id/lessonContentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/lessonContentFragment"
+        android:name="com.example.syllabuzz.LessonContentFragment"
+        android:label="fragment_lesson_content"
+        tools:layout="@layout/fragment_lesson_content" />
+
+    <fragment
+        android:id="@+id/nav_progress"
+        android:name="com.example.syllabuzz.ui.gallery.GalleryFragment"
+        android:label="@string/menu_progress"
+        tools:layout="@layout/fragment_gallery" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.example.syllabuzz.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/fragment_slideshow" />
+</navigation>
