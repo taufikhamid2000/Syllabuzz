@@ -1,13 +1,13 @@
-package com.example.syllabuzz.ui.slideshow
+package com.example.syllabuzz.ui.progress
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SlideshowViewModel : ViewModel() {
+class ProgressViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is slideshow Fragment"
+        value = "This is the progress screen"
     }
     val text: LiveData<String> = _text
 }

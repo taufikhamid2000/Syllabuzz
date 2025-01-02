@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.progress.ProgressFragment">
+    tools:context=".ui.settings.SettingsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/progressRecyclerView"
+        android:id="@+id/settingsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"

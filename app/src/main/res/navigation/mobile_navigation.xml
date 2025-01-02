@@ -37,13 +37,13 @@
 
     <fragment
         android:id="@+id/nav_progress"
-        android:name="com.example.syllabuzz.ui.gallery.GalleryFragment"
+        android:name="com.example.syllabuzz.ui.progress.ProgressFragment"
         android:label="@string/menu_progress"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_progress" />
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.example.syllabuzz.ui.slideshow.SlideshowFragment"
+        android:name="com.example.syllabuzz.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_slideshow" />
 </navigation>
