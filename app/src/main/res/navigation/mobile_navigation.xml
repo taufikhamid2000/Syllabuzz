@@ -17,8 +17,40 @@
         android:label="@string/menu_subjects"
         tools:layout="@layout/fragment_subjects" >
         <action
+            android:id="@+id/action_subjectsFragment_to_chaptersFragment"
+            app:destination="@id/chaptersFragment" />
+        <action
             android:id="@+id/action_subjectsFragment_to_lessonsFragment"
             app:destination="@id/lessonsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chaptersFragment"
+        android:name="com.example.syllabuzz.ui.chapters.ChaptersFragment"
+        android:label="Chapters"
+        tools:layout="@layout/fragment_list_generic" >
+        <argument
+            android:name="subjectId"
+            app:argType="string" />
+        <argument
+            android:name="subjectName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_chaptersFragment_to_topicsFragment"
+            app:destination="@id/topicsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/topicsFragment"
+        android:name="com.example.syllabuzz.ui.topics.TopicsFragment"
+        android:label="Topics"
+        tools:layout="@layout/fragment_list_generic" >
+        <argument
+            android:name="chapterId"
+            app:argType="string" />
+        <argument
+            android:name="chapterName"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/lessonsFragment"
@@ -39,7 +71,7 @@
         android:id="@+id/nav_progress"
         android:name="com.example.syllabuzz.ui.progress.ProgressFragment"
         android:label="@string/menu_progress"
-        tools:layout="@layout/fragment_progress" />
+        tools:layout="@layout/fragment_progress_api" />
 
     <fragment
         android:id="@+id/nav_settings"
