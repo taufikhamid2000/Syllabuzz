@@ -6,11 +6,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.syllabuzz.R
+import com.example.syllabuzz.network.model.ProgressEntry
 
-class ProgressAdapter(private val progressList: List<String>) :
+class ProgressAdapter(private val progressList: List<ProgressEntry>) :
     RecyclerView.Adapter<ProgressAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val topicText: TextView = view.findViewById(R.id.subjectTextView)
         val progressTextView: TextView = view.findViewById(R.id.progressTextView)
     }
 
@@ -21,7 +23,16 @@ class ProgressAdapter(private val progressList: List<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.progressTextView.text = progressList[position]
+        val entry = progressList[position]
+        holder.topicText.text = entry.topicId ?: "Unknown Topic"
+        val statusLabel = when (entry.status) {
+            "completed" -> "Completed"
+            "in_progress" -> "In Progress"
+            else -> "Not Started"
+        }
+        val scoreText = entry.score?.let { " · Score: $it%" } ?: ""
+        val attemptsText = entry.attempts?.let { " · $it attempt${if (it != 1) "s" else ""}" } ?: ""
+        holder.progressTextView.text = "$statusLabel$scoreText$attemptsText"
     }
 
     override fun getItemCount(): Int = progressList.size

@@ -1,15 +1,16 @@
 package com.example.syllabuzz
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.syllabuzz.network.model.Subject
 
-class SubjectsAdapter(private val subjects: List<String>) :
-    RecyclerView.Adapter<SubjectsAdapter.ViewHolder>() {
+class SubjectsAdapter(
+    private val subjects: List<Subject>,
+    private val onClick: (Subject) -> Unit
+) : RecyclerView.Adapter<SubjectsAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(R.id.subjectTextView)
@@ -22,16 +23,9 @@ class SubjectsAdapter(private val subjects: List<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.text = subjects[position]
-
-        holder.textView.setOnClickListener {
-            val subjectName = subjects[position]
-            val bundle = Bundle()
-            bundle.putString("subjectName", subjectName)
-
-            val navController = it.findNavController()
-            navController.navigate(R.id.action_subjectsFragment_to_lessonsFragment, bundle)
-        }
+        val subject = subjects[position]
+        holder.textView.text = subject.name
+        holder.itemView.setOnClickListener { onClick(subject) }
     }
 
     override fun getItemCount(): Int = subjects.size

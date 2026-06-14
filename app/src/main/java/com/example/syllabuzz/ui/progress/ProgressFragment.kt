@@ -5,12 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.syllabuzz.databinding.FragmentProgressBinding
+import com.example.syllabuzz.R
+import com.example.syllabuzz.auth.AuthManager
+import com.example.syllabuzz.databinding.FragmentProgressApiBinding
+import com.example.syllabuzz.repository.MyQuizaRepository
+import kotlinx.coroutines.launch
 
 class ProgressFragment : Fragment() {
 
-    private var _binding: FragmentProgressBinding? = null
+    private var _binding: FragmentProgressApiBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -18,20 +24,72 @@ class ProgressFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentProgressBinding.inflate(inflater, container, false)
+        _binding = FragmentProgressApiBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loadProgress()
+    }
 
-        // Sample progress data
-        val progressData = listOf("Lesson 1: Completed", "Lesson 2: In Progress", "Lesson 3: Not Started")
+    override fun onResume() {
+        super.onResume()
+        // Reload when returning from login
+        if (binding.btnLogin.visibility == View.VISIBLE) {
+            val authManager = AuthManager.getInstance(requireContext())
+            if (authManager.isLoggedIn()) loadProgress()
+        }
+    }
 
-        // Set up RecyclerView
-        val progressAdapter = ProgressAdapter(progressData)
-        binding.progressRecyclerView.adapter = progressAdapter
-        binding.progressRecyclerView.layoutManager = LinearLayoutManager(context)
+    private fun loadProgress() {
+        val authManager = AuthManager.getInstance(requireContext())
+
+        if (!authManager.isLoggedIn()) {
+            binding.progressRecyclerView.visibility = View.GONE
+            binding.loadingProgress.visibility = View.GONE
+            binding.statusText.text = "Sign in to see your quiz progress"
+            binding.statusText.visibility = View.VISIBLE
+            binding.btnLogin.visibility = View.VISIBLE
+            binding.btnLogin.setOnClickListener {
+                findNavController().navigate(R.id.nav_login)
+            }
+            return
+        }
+
+        binding.btnLogin.visibility = View.GONE
+        binding.statusText.visibility = View.GONE
+        binding.progressRecyclerView.visibility = View.GONE
+        binding.loadingProgress.visibility = View.VISIBLE
+
+        val repo = MyQuizaRepository(authManager)
+        lifecycleScope.launch {
+            val result = repo.getMyProgress()
+            binding.loadingProgress.visibility = View.GONE
+
+            result.fold(
+                onSuccess = { entries ->
+                    if (entries.isEmpty()) {
+                        binding.statusText.text = "No quiz attempts yet. Start a quiz to track progress!"
+                        binding.statusText.visibility = View.VISIBLE
+                    } else {
+                        binding.progressRecyclerView.layoutManager = LinearLayoutManager(context)
+                        binding.progressRecyclerView.adapter = ProgressAdapter(entries)
+                        binding.progressRecyclerView.visibility = View.VISIBLE
+                    }
+                },
+                onFailure = { error ->
+                    if (error.message == "not_authenticated") {
+                        binding.statusText.text = "Session expired. Please sign in again."
+                        binding.statusText.visibility = View.VISIBLE
+                        binding.btnLogin.visibility = View.VISIBLE
+                    } else {
+                        binding.statusText.text = "Failed to load progress. Please try again."
+                        binding.statusText.visibility = View.VISIBLE
+                    }
+                }
+            )
+        }
     }
 
     override fun onDestroyView() {
