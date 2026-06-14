@@ -43,6 +43,7 @@ class TopicsFragment : Fragment() {
             result.fold(
                 onSuccess = { topics ->
                     if (topics.isEmpty()) {
+                        binding.emptyText.text = "No topics found for this chapter"
                         binding.emptyText.visibility = View.VISIBLE
                     } else {
                         binding.recyclerView.layoutManager = LinearLayoutManager(context)

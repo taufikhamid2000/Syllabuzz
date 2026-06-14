@@ -31,24 +31,33 @@ class SubjectsFragment : Fragment() {
 
         val repo = MyQuizaRepository(AuthManager.getInstance(requireContext()))
 
+        binding.loadingProgress.visibility = View.VISIBLE
+
         lifecycleScope.launch {
             val result = repo.getSubjects()
+            binding.loadingProgress.visibility = View.GONE
+
             result.fold(
                 onSuccess = { subjects ->
                     val active = subjects.filter { !it.isDisabled }
-                    binding.subjectsRecyclerView.layoutManager = LinearLayoutManager(context)
-                    binding.subjectsRecyclerView.adapter = SubjectsAdapter(active) { subject ->
-                        val bundle = Bundle().apply {
-                            putString("subjectId", subject.id)
-                            putString("subjectName", subject.name)
+                    if (active.isEmpty()) {
+                        binding.statusText.text = "No subjects available"
+                        binding.statusText.visibility = View.VISIBLE
+                    } else {
+                        binding.subjectsRecyclerView.layoutManager = LinearLayoutManager(context)
+                        binding.subjectsRecyclerView.adapter = SubjectsAdapter(active) { subject ->
+                            val bundle = Bundle().apply {
+                                putString("subjectId", subject.id)
+                                putString("subjectName", subject.name)
+                            }
+                            findNavController().navigate(R.id.action_subjectsFragment_to_chaptersFragment, bundle)
                         }
-                        findNavController().navigate(R.id.action_subjectsFragment_to_chaptersFragment, bundle)
+                        binding.subjectsRecyclerView.visibility = View.VISIBLE
                     }
                 },
                 onFailure = {
-                    android.widget.Toast.makeText(
-                        context, "Could not load subjects. Check your connection.", android.widget.Toast.LENGTH_LONG
-                    ).show()
+                    binding.statusText.text = "Could not load subjects.\nCheck your connection and try again."
+                    binding.statusText.visibility = View.VISIBLE
                 }
             )
         }

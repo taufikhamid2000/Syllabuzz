@@ -43,6 +43,7 @@ class ChaptersFragment : Fragment() {
             result.fold(
                 onSuccess = { chapters ->
                     if (chapters.isEmpty()) {
+                        binding.emptyText.text = "No chapters found for this subject"
                         binding.emptyText.visibility = View.VISIBLE
                     } else {
                         binding.recyclerView.layoutManager = LinearLayoutManager(context)
