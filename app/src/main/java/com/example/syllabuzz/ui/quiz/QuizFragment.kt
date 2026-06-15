@@ -42,20 +42,27 @@ class QuizFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val quizId = arguments?.getString("quizId") ?: return
-        val quizName = arguments?.getString("quizName") ?: "Quiz"
-
         val authManager = AuthManager.getInstance(requireContext())
         val repo = MyQuizaRepository(authManager)
 
         if (!authManager.isLoggedIn()) {
-            binding.statusText.text = "Please sign in to take quizzes"
-            binding.statusText.visibility = View.VISIBLE
+            showStatus("Sign in to take this quiz")
+            binding.btnSignIn.visibility = View.VISIBLE
+            binding.btnSignIn.setOnClickListener {
+                findNavController().navigate(R.id.nav_login)
+            }
             return
         }
 
+        loadQuiz(repo, quizId)
+
+        binding.btnDone.setOnClickListener {
+            findNavController().popBackStack()
+        }
+    }
+
+    private fun loadQuiz(repo: MyQuizaRepository, quizId: String) {
         binding.loadingProgress.visibility = View.VISIBLE
-        binding.statusText.text = "Loading quiz…"
-        binding.statusText.visibility = View.VISIBLE
 
         lifecycleScope.launch {
             val result = repo.getQuizDetail(quizId)
@@ -63,12 +70,12 @@ class QuizFragment : Fragment() {
 
             result.fold(
                 onSuccess = { quiz ->
-                    binding.statusText.visibility = View.GONE
                     binding.quizTitle.text = quiz.name
                     startTimeMs = System.currentTimeMillis()
 
                     binding.questionsRecyclerView.layoutManager = LinearLayoutManager(context)
-                    binding.questionsRecyclerView.adapter = QuestionsAdapter(quiz.questions, selectedAnswers)
+                    binding.questionsRecyclerView.adapter =
+                        QuestionsAdapter(quiz.questions, selectedAnswers)
                     binding.quizContent.visibility = View.VISIBLE
 
                     binding.btnSubmit.setOnClickListener {
@@ -76,14 +83,9 @@ class QuizFragment : Fragment() {
                     }
                 },
                 onFailure = {
-                    binding.statusText.text = "Failed to load quiz. Please try again."
-                    binding.statusText.visibility = View.VISIBLE
+                    showStatus("Failed to load quiz. Please try again.")
                 }
             )
-        }
-
-        binding.btnDone.setOnClickListener {
-            findNavController().popBackStack()
         }
     }
 
@@ -105,21 +107,26 @@ class QuizFragment : Fragment() {
                 onSuccess = { response ->
                     binding.quizContent.visibility = View.GONE
                     binding.resultScore.text = "${response.score}%"
-                    binding.resultDetail.text = "${response.correctAnswers} / ${response.totalQuestions} correct"
+                    binding.resultDetail.text =
+                        "${response.correctAnswers} / ${response.totalQuestions} correct"
                     binding.resultXp.text = if (response.xpAwarded) "+50 XP earned!" else ""
                     binding.resultCard.visibility = View.VISIBLE
                 },
                 onFailure = { error ->
                     val msg = if (error.message == "not_authenticated") {
-                        "Please sign in to submit the quiz"
+                        "Session expired. Please sign in again."
                     } else {
                         "Submission failed. Please try again."
                     }
-                    binding.statusText.text = msg
-                    binding.statusText.visibility = View.VISIBLE
+                    showStatus(msg)
                 }
             )
         }
+    }
+
+    private fun showStatus(message: String) {
+        binding.statusText.text = message
+        binding.statusContainer.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

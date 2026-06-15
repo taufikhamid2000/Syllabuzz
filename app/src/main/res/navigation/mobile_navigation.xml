@@ -51,7 +51,45 @@
         <argument
             android:name="chapterName"
             app:argType="string" />
+        <action
+            android:id="@+id/action_topicsFragment_to_quizListFragment"
+            app:destination="@id/quizListFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/quizListFragment"
+        android:name="com.example.syllabuzz.ui.quiz.QuizListFragment"
+        android:label="Quizzes"
+        tools:layout="@layout/fragment_list_generic" >
+        <argument
+            android:name="topicId"
+            app:argType="string" />
+        <argument
+            android:name="topicName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_quizListFragment_to_quizFragment"
+            app:destination="@id/quizFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/quizFragment"
+        android:name="com.example.syllabuzz.ui.quiz.QuizFragment"
+        android:label="Quiz"
+        tools:layout="@layout/fragment_quiz" >
+        <argument
+            android:name="quizId"
+            app:argType="string" />
+        <argument
+            android:name="quizName"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.example.syllabuzz.auth.LoginFragment"
+        android:label="Sign In"
+        tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/lessonsFragment"
         android:name="com.example.syllabuzz.LessonsFragment"
