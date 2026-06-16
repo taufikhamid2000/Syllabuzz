@@ -27,9 +27,22 @@ class QuizListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val quiz = quizzes[position]
         holder.titleText.text = quiz.name
-        holder.subtitleText.text = "${quiz.questionCount} questions"
+
+        val count = "${quiz.questionCount} question${if (quiz.questionCount != 1) "s" else ""}"
+        if (quiz.verified) {
+            holder.subtitleText.text = count
+            holder.subtitleText.setTextColor(COLOR_NORMAL)
+        } else {
+            holder.subtitleText.text = "$count · Pending review — won't count toward progress"
+            holder.subtitleText.setTextColor(COLOR_UNVERIFIED)
+        }
         holder.subtitleText.visibility = View.VISIBLE
         holder.itemView.setOnClickListener { onClick(quiz) }
+    }
+
+    private companion object {
+        const val COLOR_NORMAL = 0xFF666666.toInt()
+        const val COLOR_UNVERIFIED = 0xFFB26A00.toInt() // amber
     }
 
     override fun getItemCount(): Int = quizzes.size

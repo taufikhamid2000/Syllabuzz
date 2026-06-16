@@ -71,6 +71,8 @@ class QuizFragment : Fragment() {
             result.fold(
                 onSuccess = { quiz ->
                     binding.quizTitle.text = quiz.name
+                    binding.unverifiedBanner.visibility =
+                        if (quiz.verified) View.GONE else View.VISIBLE
                     startTimeMs = System.currentTimeMillis()
 
                     binding.questionsRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -156,7 +158,9 @@ private class QuestionsAdapter(
         val question = questions[position]
         holder.questionText.text = "${position + 1}. ${question.text}"
 
-        val isMulti = question.type.contains("multi", ignoreCase = true)
+        // MyQuiza question types: "checkbox" = multi-select, "radio"/other = single-select
+        val isMulti = question.type.equals("checkbox", ignoreCase = true) ||
+            question.type.contains("multi", ignoreCase = true)
         holder.questionType.text = if (isMulti) "Select all that apply" else "Select one"
         holder.questionType.visibility = View.VISIBLE
 

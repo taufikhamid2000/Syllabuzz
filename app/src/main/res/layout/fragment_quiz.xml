@@ -57,6 +57,17 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
+            android:id="@+id/unverifiedBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚠ This quiz is pending review. Your score won't be saved or earn XP."
+            android:textSize="13sp"
+            android:textColor="#7A4E00"
+            android:background="#FFF3D6"
+            android:padding="12dp"
+            android:visibility="gone" />
+
+        <TextView
             android:id="@+id/quizTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

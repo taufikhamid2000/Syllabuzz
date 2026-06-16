@@ -42,7 +42,8 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_subjects, R.id.nav_progress, R.id.nav_settings
+                R.id.nav_home, R.id.nav_subjects, R.id.nav_progress,
+                R.id.nav_leaderboard, R.id.nav_settings
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -67,6 +68,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_progress -> {
                     Log.d("Navigation", "Progress selected")
                     findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_progress)
+                }
+                R.id.nav_leaderboard -> {
+                    Log.d("Navigation", "Leaderboard selected")
+                    findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_leaderboard)
                 }
                 R.id.nav_settings -> {
                     Log.d("Navigation", "Settings selected")

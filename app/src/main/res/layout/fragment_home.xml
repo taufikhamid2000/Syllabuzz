@@ -61,13 +61,13 @@
             android:text="Settings"
             android:layout_margin="8dp" />
 
-        <!-- Placeholder for Additional Button -->
+        <!-- Random Quiz: fetches a random quiz with questions from anywhere in the tree -->
         <Button
             android:id="@+id/btnExtra"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:text="More"
+            android:text="Random Quiz"
             android:layout_margin="8dp" />
 
     </GridLayout>

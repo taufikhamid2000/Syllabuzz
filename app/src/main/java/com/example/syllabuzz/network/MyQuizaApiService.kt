@@ -15,7 +15,10 @@ interface MyQuizaApiService {
     suspend fun getTopics(@Path("id") chapterId: String): List<Topic>
 
     @GET("/api/v1/topics/{id}/quizzes")
-    suspend fun getQuizzes(@Path("id") topicId: String): List<QuizSummary>
+    suspend fun getQuizzes(
+        @Path("id") topicId: String,
+        @Query("includeUnverified") includeUnverified: Boolean = true
+    ): List<QuizSummary>
 
     @GET("/api/v1/quizzes/{id}")
     suspend fun getQuizDetail(@Path("id") quizId: String): QuizDetail

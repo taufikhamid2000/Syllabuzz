@@ -35,10 +35,9 @@ class ProgressFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Reload when returning from login
-        if (binding.btnLogin.visibility == View.VISIBLE) {
-            val authManager = AuthManager.getInstance(requireContext())
-            if (authManager.isLoggedIn()) loadProgress()
+        val authManager = AuthManager.getInstance(requireContext())
+        if (authManager.isLoggedIn() && binding.progressRecyclerView.visibility != View.VISIBLE) {
+            loadProgress()
         }
     }
 
@@ -49,16 +48,15 @@ class ProgressFragment : Fragment() {
             binding.progressRecyclerView.visibility = View.GONE
             binding.loadingProgress.visibility = View.GONE
             binding.statusText.text = "Sign in to see your quiz progress"
-            binding.statusText.visibility = View.VISIBLE
             binding.btnLogin.visibility = View.VISIBLE
+            binding.statusContainer.visibility = View.VISIBLE
             binding.btnLogin.setOnClickListener {
                 findNavController().navigate(R.id.nav_login)
             }
             return
         }
 
-        binding.btnLogin.visibility = View.GONE
-        binding.statusText.visibility = View.GONE
+        binding.statusContainer.visibility = View.GONE
         binding.progressRecyclerView.visibility = View.GONE
         binding.loadingProgress.visibility = View.VISIBLE
 
@@ -70,8 +68,9 @@ class ProgressFragment : Fragment() {
             result.fold(
                 onSuccess = { entries ->
                     if (entries.isEmpty()) {
-                        binding.statusText.text = "No quiz attempts yet. Start a quiz to track progress!"
-                        binding.statusText.visibility = View.VISIBLE
+                        binding.statusText.text = "No quiz attempts yet.\nStart a quiz to track your progress!"
+                        binding.btnLogin.visibility = View.GONE
+                        binding.statusContainer.visibility = View.VISIBLE
                     } else {
                         binding.progressRecyclerView.layoutManager = LinearLayoutManager(context)
                         binding.progressRecyclerView.adapter = ProgressAdapter(entries)
@@ -81,12 +80,12 @@ class ProgressFragment : Fragment() {
                 onFailure = { error ->
                     if (error.message == "not_authenticated") {
                         binding.statusText.text = "Session expired. Please sign in again."
-                        binding.statusText.visibility = View.VISIBLE
                         binding.btnLogin.visibility = View.VISIBLE
                     } else {
                         binding.statusText.text = "Failed to load progress. Please try again."
-                        binding.statusText.visibility = View.VISIBLE
+                        binding.btnLogin.visibility = View.GONE
                     }
+                    binding.statusContainer.visibility = View.VISIBLE
                 }
             )
         }
